@@ -33,7 +33,7 @@ function New-UUIDNamespace {
         $NSBytesBigEndian = $NS.ToByteArray($true)
     } else {
         $NSBytesBigEndian = $NS.ToByteArray()
-        Convert-UUIDBytes ([ref]$NSBytesBigEndian)
+        Convert-UUIDBytes ($NSBytesBigEndian)
     }
     # convert to big endian... uh... $NSBytesBigEndian.ToByteArray($true) ???
     # ByteswapGuid ([ref]$NSBytesBigEndian)
@@ -44,7 +44,7 @@ function New-UUIDNamespace {
     # get unicode bytes of string
     $UTF8Name = [System.Text.Encoding]::UTF8.GetBytes($Name)
     # transform... something
-    $Hasher.TransformFinalBlock($UTF8Name, 0, $UTF8Name.Length)
+    $null = $Hasher.TransformFinalBlock($UTF8Name, 0, $UTF8Name.Length)
 
     # create 16-byte var to hold the crypt hash
     $Hash16 = [byte[]]::new(16)
@@ -65,7 +65,7 @@ function New-UUIDNamespace {
     $Hash16[6] = [byte](($Hash16[6] -band (-bnot 0xF0)) -bor ($Version -shl 4))
 
     # convert back to little-endian
-    Convert-GUIDBytes ([ref]$Hash16)
+    Convert-UUIDBytes ($Hash16)
     # create final GUID
     $ReturnGUID = [System.Guid]::new($Hash16)
 

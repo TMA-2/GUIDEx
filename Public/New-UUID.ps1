@@ -55,9 +55,9 @@ function New-UUID {
 
     Process {
         # Convert the namespace GUID to a byte array, keeping the endianness from swapping
-        if($PSEdition -eq 'Desktop') {
+        if($PSEdition -eq 'Core') {
             $NamespaceBytes = $Namespace.ToByteArray($LITTLE_ENDIAN)
-        } else {
+        } elseif($PSEdition -eq 'Desktop') {
             $NamespaceBytes = $Namespace.ToByteArray() | Convert-BinaryLSB
         }
 
@@ -86,7 +86,11 @@ function New-UUID {
         $HashBytes = $HashBytes -as [byte[]]
 
         # Create a new GUID from the hash
-        $uuid = [Guid]::New($HashBytes, $LITTLE_ENDIAN)
+        if($PSEdition -eq 'Core') {
+            $uuid = [Guid]::New($HashBytes, $LITTLE_ENDIAN)
+        } elseif($PSEdition -eq 'Desktop') {
+            $uuid = [Guid]::New($HashBytes)
+        }
         return $uuid
     }
 
