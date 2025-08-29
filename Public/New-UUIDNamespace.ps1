@@ -1,73 +1,101 @@
-# Create UUID v3 or v5 from a namespace and string
-# ref: https://github.com/icosa-foundation/open-brush/blob/78cc38cb172649340eb61eec3d3d38f7f289069c/Assets/Scripts/Util/GuidUtils.cs
-# TODO: Test vs. New-UUID
-# TODO: TEST w/ Pester using the Terminal documentation
-# TODO: STANDARDIZE FUNC
-#   [ ]: PIPELINE + PROCESS BLOCK
+# Example usage:
+# $namespace = [Guid]::Parse("6ba7b810-9dad-11d1-80b4-00c04fd430c8") # DNS namespace
+# $name = "example.com"
+# PS C:\> $uuidv5 = New-UUID -Namespace $namespace -Name $name
+# PS C:\> Write-Output $uuidv5
+# cfbff0d1-9375-5685-968c-48ce8b15ae17
 function New-UUIDNamespace {
-    [Alias('New-GUIDNamespace','nudns')]
+    <#
+    .SYNOPSIS
+    Generates a UUID version 3 (UUIDv3) or version 5 (UUIDv5) based on a namespace and a name.
+
+    .DESCRIPTION
+    The New-UUID function generates a UUID version 3 or version 5, which are universally unique identifiers that are generated using a namespace identifier and a name. UUIDv3 uses MD5 hashing, while UUIDv5 uses SHA-1 hashing to create the identifier.
+
+    .PARAMETER Namespace
+    The namespace identifier, which is a UUID that defines the scope of the name.
+
+    .PARAMETER Name
+    The name from which the UUID will be generated. This is typically a string.
+
+    .PARAMETER Version
+    The version of the UUID to generate. Accepts 3 or 5. Default is 5.
+
+    .OUTPUTS
+    System.Guid
+    The generated UUID version 3 or 5.
+
+    .EXAMPLE
+    PS C:\> New-UUID -Namespace "6ba7b810-9dad-11d1-80b4-00c04fd430c8" -Name "example" -Version 5
+    Generates a UUIDv5 based on the provided namespace and name.
+
+    .EXAMPLE
+    PS C:\> New-UUID -Namespace "6ba7b810-9dad-11d1-80b4-00c04fd430c8" -Name "example" -Version 3
+    Generates a UUIDv3 based on the provided namespace and name.
+
+    .NOTES
+    UUID version 3 is defined in RFC 4122.
+    UUID version 5 is defined in RFC 4122.
+    #>
+    [Alias('New-GUIDNamespace','ngns')]
+    [OutputType([guid])]
     [CmdletBinding()]
-    [OutputType([System.Guid])]
     param (
-        [Guid]
-        $NS,
-        [string]
-        $Name,
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline)]
+        [Guid]$Namespace,
+        [Parameter(Mandatory, Position = 1, ValueFromPipeline)]
+        [string]$Name,
         [ValidateSet(3, 5)]
-        [int]
-        $Version = 5
+        [int]$Version = 5
     )
 
-    $Hasher = if ($Version -eq 5) {
-        # alternately takes a string HashName
-        [System.Security.Cryptography.SHA1]::Create()
-    } elseif ($Version -eq 3) {
-        # also takes a string AlgName
-        [System.Security.Cryptography.MD5]::Create()
-    } else {
-        Throw [System.Exception]::new("Unrecognized UUID version $Version")
+    Begin {
+        Set-Variable -Name 'LITTLE_ENDIAN' -Value ([System.BitConverter]::IsLittleEndian) -Option Constant -Scope Global -ea SilentlyContinue
     }
 
-    # get GUID as big endian byte[] (16ms)
-    if ($IsCoreCLR) {
-        $NSBytesBigEndian = $NS.ToByteArray($true)
-    } else {
-        $NSBytesBigEndian = $NS.ToByteArray()
-        Convert-UUIDBytes ($NSBytesBigEndian)
+    Process {
+        # Convert the namespace GUID to a byte array, keeping the endianness from swapping
+        if($PSEdition -eq 'Core') {
+            $NamespaceBytes = $Namespace.ToByteArray($LITTLE_ENDIAN)
+        } elseif($PSEdition -eq 'Desktop') {
+            $NamespaceBytes = $Namespace.ToByteArray() | Convert-BinaryLSB
+        }
+
+        # Convert the name to a byte array
+        $NameBytes = [System.Text.Encoding]::UTF8.GetBytes($Name)
+
+        # Combine namespace and name
+        $CombinedBytes = $NamespaceBytes + $NameBytes
+
+        # Create a hash based on the version
+        if ($Version -eq 5) {
+            $HashAlgorithm = [System.Security.Cryptography.SHA1]::Create()
+        } elseif ($Version -eq 3) {
+            $HashAlgorithm = [System.Security.Cryptography.MD5]::Create()
+        }
+        $VersionByte = $Version -shl 4
+
+        # Compute the hash
+        $HashBytes = $HashAlgorithm.ComputeHash($CombinedBytes)[0..15]
+
+        # Set the version and variant bits
+        $HashBytes[6] = ($HashBytes[6] -band 0x0F) -bor $VersionByte
+        $HashBytes[8] = ($HashBytes[8] -band 0x3F) -bor 0x80
+
+        # verify it's a byte array and not a generic object[]
+        $HashBytes = $HashBytes -as [byte[]]
+
+        # Create a new GUID from the hash
+        if($PSEdition -eq 'Core') {
+            $uuid = [Guid]::New($HashBytes, $LITTLE_ENDIAN)
+        } elseif($PSEdition -eq 'Desktop') {
+            $uuid = [Guid]::New($HashBytes)
+        }
+        return $uuid
     }
-    # convert to big endian... uh... $NSBytesBigEndian.ToByteArray($true) ???
-    # ByteswapGuid ([ref]$NSBytesBigEndian)
 
-    # where does this go...?
-    $Hasher.TransformBlock($NSBytesBigEndian, 0, $NSBytesBigEndian.Length, $null, 0)
+    End {
+        $HashAlgorithm.Dispose()
+    }
+}
 
-    # get unicode bytes of string
-    $UTF8Name = [System.Text.Encoding]::UTF8.GetBytes($Name)
-    # transform... something
-    $null = $Hasher.TransformFinalBlock($UTF8Name, 0, $UTF8Name.Length)
-
-    # create 16-byte var to hold the crypt hash
-    $Hash16 = [byte[]]::new(16)
-    # Copy(arr Source, int SourceIndex, arr Dest, int DestIndex, int length)
-    # TODO: Try Copy(arr Source, arr Dest, int length)
-    [System.Array]::Copy($Hasher.Hash, 0, $Hash16, 0, $Hash16.Length)
-
-    # see: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_arithmetic_operators?view=powershell-7.4#bitwise-operators
-
-    # RFC4122... Octet 8, clock_seq_hi_and_reserved, top 3 bits to 1 0 x
-    # from (byte)((hash16[8] & ~0xc0) | 0x80)
-    # ~0xC0 is the complement of 192, i.e. 63
-    $Hash16[8] = [byte](($Hash16[8] -band (-bnot 0xC0)) -bor 0x80)
-    # Version... most-significant 4 bits of time_hi_and_version (octets 6,7)
-    # from (byte)((hash16[6] & ~0xf0) | (version << 4))
-    # ~0xF0 is the complement of 0b11110000, i.e. 15, 0b1111
-    # TODO: See how it's done in .NET Core [System.Numerics.BitOperations]::RotateLeft(), RotateRight()
-    $Hash16[6] = [byte](($Hash16[6] -band (-bnot 0xF0)) -bor ($Version -shl 4))
-
-    # convert back to little-endian
-    Convert-UUIDBytes ($Hash16)
-    # create final GUID
-    $ReturnGUID = [System.Guid]::new($Hash16)
-
-    Return $ReturnGUID
-} # New-NamespaceGUID()

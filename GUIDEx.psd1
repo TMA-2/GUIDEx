@@ -12,7 +12,7 @@
 RootModule = 'GUIDEx.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.4.1'
+ModuleVersion = '0.5.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -33,7 +33,7 @@ Copyright = '(c) THR. All rights reserved.'
 Description = 'Functions for working with and converting GUIDs.'
 
 # Minimum version of the PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '5.0'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -70,10 +70,10 @@ RequiredModules = @('Conversion')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
-    # TODO: Compare and remove one of these
-    'New-UUID' # Create UUID v3 or v5 from a namespace and string
+    # 'New-UUID' # File renamed to .bug for now.
     'New-UUIDNamespace' # Create UUID v3 or v5 from a namespace and string
-    'Convert-UUID'
+    'Convert-UUIDOrder' # Converts a GUID to a different format, optionally reversing the first 3 groups of bytes and flipping all bit orders
+    'Convert-UUID' # Converts a GUID to a different format, optionally reversing the first 3 groups of bytes and flipping all bit orders
     'Convert-UUIDBytes' # Reverses the first 3 groups of bytes in a GUID, optionally flipping all bit orders
     )
 
@@ -85,10 +85,11 @@ VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = @(
-    'New-GUID', 'nud'
-    'New-GUIDNamespace', 'nudns'
-    'Convert-GUID', 'cvud',
-    'Convert-GUIDBytes', 'cvudb'
+    # 'New-GUID', 'ng'
+    'New-GUIDNamespace', 'ngns'
+    'Convert-GUIDOrder', 'cvgo',
+    'Convert-GUID', 'cvg',
+    'Convert-GUIDBytes', 'cvgb'
     )
 
 # DSC resources to export from this module
@@ -118,9 +119,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes =
-            '2025-02-14: Renamed functions to use UUID. Added Convert-UUID, New-UUID, New-UUIDNamespace, as well as aliases.',
-            '2025-02-13: Initial version'
+        ReleaseNotes = '2025-02-14 - 0.5.1: Renamed functions to use UUID. Added Convert-UUID, New-UUID, New-UUIDNamespace, as well as aliases.'
 
         # Prerelease string of this module
         # Prerelease = ''

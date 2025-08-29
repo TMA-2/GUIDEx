@@ -1,3 +1,6 @@
+# NOTE: -RespectBitOrder alone returns the same GUID.
+# FIXME: -Reverse makes bytes 1-3, 7 blank.
+
 # P1: Test functionality (Pester?)
 # BUG: creating a guid from byte[] with manually swapped order un-swaps it...
 #   in PS 5.1, or in PS7 if BigEndian = False
@@ -9,7 +12,7 @@
 #   [ ]: PIPELINE SUPPORT
 #   [x]: PROCESS BLOCK
 function Convert-UUID {
-    [Alias('Convert-GUID','cvud')]
+    [Alias('Convert-GUID','cvg')]
     [OutputType([System.Guid])]
     [CmdletBinding()]
     Param(
@@ -18,7 +21,7 @@ function Convert-UUID {
             ValueFromPipeline,
             ValueFromPipelineByPropertyName
         )]
-        [ref]
+        [guid]
         $GUID,
         # swaps the low/high 4-bit order of bytes
         [switch]
@@ -29,19 +32,19 @@ function Convert-UUID {
 
     Process {
         # create temp var to work with and check data type
-        Write-Verbose "Convert-GUIDBytes - Type = $($GUID.Value.GetType())"
+        Write-Verbose "Convert-GUIDBytes - Type = $($GUID.GetType())"
 
-        if ($GUID.Value -is [guid]) {
+        if ($GUID -is [guid]) {
             # convert GUID to bytearray first
-            $TempVar = $GUID.Value.ToByteArray()
-        } elseif ($GUID.Value -is [byte[]]) {
-            $TempVar = $GUID.Value
+            $TempVar = $GUID.ToByteArray()
+        } elseif ($GUID -is [byte[]]) {
+            $TempVar = $GUID
             # check byte length
             if ($TempVar.Length -ne 16) {
-                Throw [System.Management.Automation.ErrorRecord]::new([System.TypeLoadException]::new("Unexpected byte[] length of $($TempVar.Length) != 16."), 3,'InvalidData', $GUID.Value)
+                Throw [System.Management.Automation.ErrorRecord]::new([System.TypeLoadException]::new("Unexpected byte[] length of $($TempVar.Length) != 16."), 3,'InvalidData', $GUID)
             }
         } else {
-            Throw [System.Management.Automation.ErrorRecord]::new([System.TypeLoadException]::new("Unexpected data type $($GUID.Value.GetType()) != Byte[] or Guid."), 4,'InvalidType', $GUID.Value)
+            Throw [System.Management.Automation.ErrorRecord]::new([System.TypeLoadException]::new("Unexpected data type $($GUID.GetType()) != Byte[] or Guid."), 4,'InvalidType', $GUID)
         }
 
         # easy method
@@ -94,18 +97,20 @@ function Convert-UUID {
             }
         }
 
-        Write-Verbose "Setting [$($GUID.Value.GetType())]`$GUID = the modified byte array..."
+        Write-Verbose "Setting [$($GUID.GetType())]`$GUID = the modified byte array..."
         # update passed reference with new value
-        if ($GUID.Value -is [guid]) {
+        if ($GUID -is [guid]) {
             # create new GUID and set to the passed var
-            if ($RespectBitOrder) {
-                $GUID.Value = [guid]::new($TempBytes)
+            if ($Reverse) {
+                # FIXME: $GUIDBytes is null with no other args
+                $GUID = [guid]::new($GUIDInt32, $GUIDInt16A, $GUIDInt16B, $GUIDBytes)
             } else {
-                $GUID.Value = [guid]::new($GUIDInt32, $GUIDInt16A, $GUIDInt16B, $GUIDBytes)
+                $GUID = [guid]::new($TempBytes)
             }
         } else {
             # otherwise, just assign the swapped byte array
-            $GUID.Value = $TempBytes
+            $GUID = $TempBytes
         }
+        $GUID
     }
 } # ByteswapGuid()

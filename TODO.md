@@ -1,0 +1,14 @@
+# TODO
+- [ ] Require the Conversion module for general binary functions
+  - [ ] Remove `Format-Binary` in favor of the same Conversion function, or embed it in the function that uses it (which?)
+  - [ ] Move `Convert-BinaryLSB` to Conversion
+- [ ] Consolidate functions. There should be approximately three:
+  - [ ] `New-UUIDNamespace` to create UUID v3/v5 namespaces
+  - [ ] `Convert-UUID` to flip between LE/BE byte order
+  - [ ] `Convert-UUIDSquished` for MSI GUIDs specifically
+- [ ] Write and verify function help
+- [ ] Generate markdown and MAML help
+- [ ] Get `[GuidEx]` class working
+- [ ] Rename `Convert-UUIDOrder` to `Convert-UUIDSquished`
+- [ ] Test performance of `Convert-UUIDOrder` vs. method used in [MSI "SquishedGuid" Conversion](https://github.com/heaths/psmsi/blob/develop/tools/ConvertFrom-SquishedGuid.ps1)
+- [ ] Fix Pester tests and naming

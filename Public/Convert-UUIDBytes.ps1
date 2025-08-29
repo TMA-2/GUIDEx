@@ -6,7 +6,7 @@
 #   [x]: PIPELINE SUPPORT
 #   [x]: PROCESS BLOCK
 function Convert-UUIDBytes {
-    [Alias('Convert-GUIDBytes','cvudb')]
+    [Alias('Convert-GUIDBytes','cvgb')]
     [OutputType([byte[]])]
     Param(
         [Parameter(
@@ -32,6 +32,7 @@ function Convert-UUIDBytes {
             'ShortOrder' {
                 # method 2: constructing the bytes in order
                 [byte[]]$NewGUID = $GUID[3..0] + $GUID[5..4] + $GUID[7..6] + $GUID[8..15]
+                $NewGUID = [guid]::new($NewGUID)
             }
             'LongOrder' {
                 # method 3: laborious, hard-to-follow method
