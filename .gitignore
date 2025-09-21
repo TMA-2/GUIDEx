@@ -1,0 +1,6 @@
+# Unnecessary / test files
+Private/Test-GUID.ps1
+
+Public/Convert-UUID.ps1
+Public/Convert-UUIDBytes.ps1
+**/*.bak

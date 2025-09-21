@@ -43,10 +43,10 @@
 #>
 #endregion: Notes
 
-$script:LITTLEENDIAN = [System.BitConverter]::IsLittleEndian
+# $script:LITTLEENDIAN = [System.BitConverter]::IsLittleEndian
 
 # this is fucking dumb
-function local:fmt {
+function private:fmt {
     Param(
         [Parameter(
             Position=0,
@@ -103,7 +103,7 @@ function local:fmt {
 }
 
 # NO: this loops through the bytes. screw that.
-function testreverseguid {
+function private:testreverseguid {
     Param(
         # GUID will be converted based on endianness
         [guid]

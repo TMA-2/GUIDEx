@@ -1,14 +1,70 @@
 # TODO
-- [ ] Require the Conversion module for general binary functions
-  - [ ] Remove `Format-Binary` in favor of the same Conversion function, or embed it in the function that uses it (which?)
-  - [ ] Move `Convert-BinaryLSB` to Conversion
-- [ ] Consolidate functions. There should be approximately three:
-  - [ ] `New-UUIDNamespace` to create UUID v3/v5 namespaces
-  - [ ] `Convert-UUID` to flip between LE/BE byte order
-  - [ ] `Convert-UUIDSquished` for MSI GUIDs specifically
-- [ ] Write and verify function help
+
+## General
+
+### High Priority
+- [x] Write/verify function help
 - [ ] Generate markdown and MAML help
-- [ ] Get `[GuidEx]` class working
-- [ ] Rename `Convert-UUIDOrder` to `Convert-UUIDSquished`
+- [ ] Compare `Convert-UUID` and `Convert-UUIDBytes`. Clean one or the other.
+- [ ] Consolidate functions. There should be approximately three:
+  - [x] `New-UUIDNamespace` to create UUID v3/v5 namespaces
+  - [x] `Convert-UUIDSquished` for MSI GUIDs specifically
+  - [ ] `Convert-UUID` to flip between LE/BE byte order
+    - [ ] Decide on a damn method and STICK WITH IT
+- [ ] Fix Pester tests once functions are sorted
+
+### Medium Priority
+- [x] Add Conversion as a required module for general binary functions
+  - [ ] Move/combine `Format-Binary` to Conversion, or embed it in the function that uses it
+  - [x] Move `Switch-ByteNibble` to Conversion
+  - [x] Move any related tests to Conversion
+
+### Low Priority
+- [ ] Get `[GuidEx]` class working. Use instead of `[guid]`.
+- [ ] Remove `Private\Test-GUID.ps1`
+
+## Convert-UUID
+- [ ] Consider just removing this albatross
+- [ ] Test performance vs. `Convert-UUIDBytes` and keep one
+- [ ] `-RespectBitOrder` alone returns the same GUID
+- [ ] Fix `-Reverse` parameter which makes bytes 1-3, 7 blank
+- [ ] Fix: Line 104 = "Value cannot be null. (Parameter 'd')" when using -Reverse -RespectBitOrder
+- [ ] Implement Pester tests
+- [ ] Creating a guid from `byte[]` with manually swapped order un-swaps it...
+- [ ] Verify `[ref]` works as expected
+- [ ] Verify pipeline support
+
+### Copilot Review
+This one is... honestly a mess. It's trying to do multiple things:
+
+- Handle both `[guid]` and `[byte[]]` input
+- Do endianness conversion (overlaps with Convert-UUIDBytes)
+- Do nibble swapping with the -Reverse flag (overlaps with Convert-UUIDSquished)
+- Has incomplete/broken logic in several places
+
+Recommendation: **Delete both functions**
+
+## Convert-UUIDBytes
+- [x] Fix input and output type inconsistency
+- [ ] Test performance vs. `Convert-UUID`
+- [ ] Combine with `Convert-UUID`, adding a `[bytes[]]` pipeline parameter (if `[guid]` doesn't automatically convert)
+
+### Copilot Review
+This function appears to be your endianness conversion function - it takes a byte array and flips it between
+little-endian and big-endian formats. The three methods are different approaches to the same goal:
+
+- ShortOrder - Clean approach: reverse sections manually `$GUID[3..0] + $GUID[5..4] + $GUID[7..6] + $GUID[8..15]`
+- LongOrder - Verbose approach: manual byte swapping with temp variables
+- Class - PowerShell Core only: uses the `[guid]::new($bytes, $bigEndian)` constructor
+
+**Problem:** It's trying to return both `[byte[]]` and `[guid]` types inconsistently.
+
+Recommendation: **Delete both functions**
+
+## New-UUIDNamespace
 - [ ] Test performance of `Convert-UUIDOrder` vs. method used in [MSI "SquishedGuid" Conversion](https://github.com/heaths/psmsi/blob/develop/tools/ConvertFrom-SquishedGuid.ps1)
-- [ ] Fix Pester tests and naming
+
+## Convert-UUIDSquished
+- [x] Add comment-based help
+- [ ] Rename `Convert-UUIDOrder` to `Convert-UUIDSquished`
+- [ ] Add option to format the output normally ("B") or for use with the registry ("N") at `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products`

@@ -1,50 +1,45 @@
-# NOTE: -RespectBitOrder alone returns the same GUID.
-# FIXME: -Reverse makes bytes 1-3, 7 blank.
+using namespace System
+using namespace System.Management.Automation
 
-# P1: Test functionality (Pester?)
-# BUG: creating a guid from byte[] with manually swapped order un-swaps it...
-#   in PS 5.1, or in PS7 if BigEndian = False
-# TODO: Verify [ref] works as expected
-# TODO: Test performance vs. Convert-UUIDBytes
-# TODO: Add option to convert to... whatever the MSI Installer product GUID order is
-# TODO: STANDARDIZE
-#   [x]: PARAM BLOCK
-#   [ ]: PIPELINE SUPPORT
-#   [x]: PROCESS BLOCK
 function Convert-UUID {
     [Alias('Convert-GUID','cvg')]
-    [OutputType([System.Guid])]
+    [OutputType([Guid])]
     [CmdletBinding()]
     Param(
         [Parameter(
             Position = 0,
-            ValueFromPipeline,
             ValueFromPipelineByPropertyName
         )]
-        [guid]
-        $GUID,
-        # swaps the low/high 4-bit order of bytes
+        [object]
+        $InputObject,
+
+        # performs a nibble swap on each byte
         [switch]
         $Reverse,
+
         [switch]
         $RespectBitOrder
     )
 
-    Process {
-        # create temp var to work with and check data type
-        Write-Verbose "Convert-GUIDBytes - Type = $($GUID.GetType())"
+    begin {
+        $FunctionName = $MyInvocation.MyCommand.Name
+    }
 
-        if ($GUID -is [guid]) {
+    process {
+        # create temp var to work with and check data type
+        Write-Verbose "${FunctionName}: Type = $($InputObject.GetType())"
+
+        if ($InputObject -is [guid]) {
             # convert GUID to bytearray first
-            $TempVar = $GUID.ToByteArray()
-        } elseif ($GUID -is [byte[]]) {
-            $TempVar = $GUID
+            $TempVar = $InputObject.ToByteArray()
+        } elseif ($InputObject -is [byte[]]) {
+            $TempVar = $InputObject
             # check byte length
             if ($TempVar.Length -ne 16) {
-                Throw [System.Management.Automation.ErrorRecord]::new([System.TypeLoadException]::new("Unexpected byte[] length of $($TempVar.Length) != 16."), 3,'InvalidData', $GUID)
+                Throw [System.Management.Automation.ErrorRecord]::new([System.TypeLoadException]::new("Unexpected byte[] length of $($TempVar.Length) != 16."), 3,'InvalidData', $InputObject)
             }
         } else {
-            Throw [System.Management.Automation.ErrorRecord]::new([System.TypeLoadException]::new("Unexpected data type $($GUID.GetType()) != Byte[] or Guid."), 4,'InvalidType', $GUID)
+            Throw [System.Management.Automation.ErrorRecord]::new([System.TypeLoadException]::new("Unexpected data type $($InputObject.GetType()) != Byte[] or Guid."), 4,'InvalidType', $InputObject)
         }
 
         # easy method

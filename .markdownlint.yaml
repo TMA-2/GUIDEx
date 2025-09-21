@@ -1,0 +1,17 @@
+MD013:          # line-length
+  code_block_line_length: 80
+  code_blocks: true
+  heading_line_length: 100
+  headings: true
+  line_length: 120
+  stern: false
+  tables: false
+MD022:          # blanks-around-headings
+  lines_above: 1
+  lines_below: 0
+MD024:          # no-duplicate-heading
+  siblings_only: true
+MD031: false    # blanks-around-fences
+MD032: false    # blanks-around-lists
+MD036: false    # no-emphasis-as-heading
+MD058: false    # blanks-around-tables

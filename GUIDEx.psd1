@@ -12,7 +12,7 @@
 RootModule = 'GUIDEx.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.5.1'
+ModuleVersion = '2.6.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -51,7 +51,12 @@ PowerShellVersion = '5.0'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @('Conversion')
+RequiredModules = @(
+    @{
+        ModuleName = 'Conversion'
+        ModuleVersion = '0.8.12'
+    }
+)
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -70,12 +75,11 @@ RequiredModules = @('Conversion')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
-    # 'New-UUID' # File renamed to .bug for now.
-    'New-UUIDNamespace' # Create UUID v3 or v5 from a namespace and string
-    'Convert-UUIDOrder' # Converts a GUID to a different format, optionally reversing the first 3 groups of bytes and flipping all bit orders
-    'Convert-UUID' # Converts a GUID to a different format, optionally reversing the first 3 groups of bytes and flipping all bit orders
-    'Convert-UUIDBytes' # Reverses the first 3 groups of bytes in a GUID, optionally flipping all bit orders
-    )
+    'Get-UUIDFromNamespace' # Create UUID v3 or v5 from a namespace and string
+    'Convert-UUIDSquished' # Converts a GUID to the format stored by Windows Installer, e.g. in the Products registry key.
+    # 'Convert-UUID' # Converts a GUID to a different format, optionally reversing the first 3 groups of bytes and flipping all bit orders
+    # 'Convert-UUIDBytes' # Reverses the first 3 groups of bytes in a GUID, optionally flipping all bit orders
+)
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -85,12 +89,12 @@ VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = @(
+    'Get-GUIDFromNamespace', 'gufn'
+    'Convert-GUIDSquished', 'Convert-UUIDOrder', 'cvgs'
     # 'New-GUID', 'ng'
-    'New-GUIDNamespace', 'ngns'
-    'Convert-GUIDOrder', 'cvgo',
-    'Convert-GUID', 'cvg',
-    'Convert-GUIDBytes', 'cvgb'
-    )
+    # 'Convert-GUID', 'cvg',
+    # 'Convert-GUIDBytes', 'cvgb'
+)
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -107,7 +111,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('UUID', 'UUIDv3', 'UUIDv5', 'GUID')
+        Tags = @('UUID', 'GUID', 'UUIDv3', 'UUIDv5', 'WindowsInstaller', 'SquishedGUID')
 
         # A URL to the license for this module.
         # LicenseUri = ''
@@ -119,7 +123,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = '2025-02-14 - 0.5.1: Renamed functions to use UUID. Added Convert-UUID, New-UUID, New-UUIDNamespace, as well as aliases.'
+        ReleaseNotes = 'See CHANGELOG.md'
 
         # Prerelease string of this module
         # Prerelease = ''

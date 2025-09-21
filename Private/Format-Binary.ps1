@@ -1,4 +1,4 @@
-function private:formatNumbers {
+function Format-Binary {
     Param(
         [Parameter(
             Mandatory,

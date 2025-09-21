@@ -1,10 +1,5 @@
 # Flips GUID byte array between little- and big-endianness
-# TODO: Test performance vs. ByteswapGuid()
-# TODO: Combine with Convert-UUID, adding a [bytes[]] pipeline parameter (if [guid] doesn't automatically convert)
-# DONE: STANDARDIZE FUNC
-#   [x]: PARAM BLOCK
-#   [x]: PIPELINE SUPPORT
-#   [x]: PROCESS BLOCK
+
 function Convert-UUIDBytes {
     [Alias('Convert-GUIDBytes','cvgb')]
     [OutputType([byte[]])]
@@ -14,25 +9,27 @@ function Convert-UUIDBytes {
             Position = 0,
             ValueFromPipeline
         )]
+        [ValidateCount(16,16)]
         [byte[]]$GUID,
+
         [ValidateSet('Class','ShortOrder','LongOrder')]
         $Method = 'ShortOrder'
     )
 
     Process {
+        $Timer = [System.Diagnostics.Stopwatch]::StartNew()
         switch ($Method) {
             'Class' {
                 # method 1: create new GUID, return as byte[] with bigendian = True
                 if ($PSEdition -eq 'Core') {
-                    $NewGUID = [guid]::new($GUID, $script:LITTLEENDIAN)
+                    $ReturnBytes = [guid]::new($GUID, $global:LITTLEENDIAN).ToByteArray()
                 } else {
                     Throw [System.PlatformNotSupportedException]::new('GUID constructor overload is only available in PowerShell Core.')
                 }
             }
             'ShortOrder' {
                 # method 2: constructing the bytes in order
-                [byte[]]$NewGUID = $GUID[3..0] + $GUID[5..4] + $GUID[7..6] + $GUID[8..15]
-                $NewGUID = [guid]::new($NewGUID)
+                [byte[]]$ReturnBytes = $GUID[3..0] + $GUID[5..4] + $GUID[7..6] + $GUID[8..15]
             }
             'LongOrder' {
                 # method 3: laborious, hard-to-follow method
@@ -52,11 +49,13 @@ function Convert-UUIDBytes {
                 $temp = $GUID[6]
                 $GUID[6] = $GUID[7]
                 $GUID[7] = $temp
-                $NewGUID = $GUID
+                $ReturnBytes = $GUID
             }
         }
 
-        # "Method {0} took {1:n3}ms" -f $Method,$Timer.TotalMilliseconds | Write-Host
-        Return $NewGUID
+        $Timer.Stop()
+        "Method {0} took {1:d3}ms" -f $Method,$Timer.ElapsedMilliseconds | Write-Verbose
+
+        Return $ReturnBytes
     }
-} # BSGUID()
+} # Convert-UUIDBytes()
