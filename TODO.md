@@ -4,6 +4,7 @@
 
 ### High Priority
 - [x] Write/verify function help
+- [ ] Fix *serious* issues with `Convert-UUIDFromNamespace` on Windows PowerShell
 - [ ] Generate markdown and MAML help
 - [ ] Compare `Convert-UUID` and `Convert-UUIDBytes`. Clean one or the other.
 - [ ] Consolidate functions. There should be approximately three:
@@ -23,7 +24,33 @@
 - [ ] Get `[GuidEx]` class working. Use instead of `[guid]`.
 - [ ] Remove `Private\Test-GUID.ps1`
 
-## Convert-UUID
+## Public Functions
+
+### New-WindowsTerminalUUID
+[New-WindowsTerminalUUID.ps1](Public/New-WindowsTerminalUUID.ps1)
+- [x] Finish building out function (simple)
+- [ ] Add Pester tests using [Windows Terminal examples](https://learn.microsoft.com/en-us/windows/terminal/json-fragment-extensions#generating-a-new-profile-guid)
+
+### Get-UUIDFromNamespace
+[Get-UUIDFromNamespace.ps1](Public/Get-UUIDFromNamespace.ps1)
+- [ ] Fix issues generating v3 UUIDs
+  - `Get-UUIDFromNamespace '6ba7b810-9dad-11d1-80b4-00c04fd430c8' -Name 'example.com' -Version 3` should output "907e1018-10ac-35d1-b62e-561c32033af0"
+- [ ] Fix issues running in Windows PowerShell
+  - [ ] L128: Cannot convert argument "buffer", with value: "System.Object[]", for "ComputeHash" to type
+"System.Byte[]"
+  - [ ] L131-132: Cannot index into a null array.
+  - [ ] L142: Exception calling ".ctor" with "1" argument(s): "Value cannot be null. Parameter name: b"
+- [ ] Test performance of `Convert-UUIDOrder` vs. method used in [MSI "SquishedGuid" Conversion](https://github.com/heaths/psmsi/blob/develop/tools/ConvertFrom-SquishedGuid.ps1)
+
+### Convert-UUIDSquished
+[Convert-UUIDSquished.ps1](Public/Convert-UUIDSquished.ps1)
+- [x] Add comment-based help
+- [x] Rename `Convert-UUIDOrder` to `Convert-UUIDSquished`
+- [ ] Add option to format the output normally ("B") or for use with the registry ("N") at `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products`
+
+## Deprecated Functions
+
+### Convert-UUID
 - [ ] Consider just removing this albatross
 - [ ] Test performance vs. `Convert-UUIDBytes` and keep one
 - [ ] `-RespectBitOrder` alone returns the same GUID
@@ -34,7 +61,7 @@
 - [ ] Verify `[ref]` works as expected
 - [ ] Verify pipeline support
 
-### Copilot Review
+#### Copilot Review
 This one is... honestly a mess. It's trying to do multiple things:
 
 - Handle both `[guid]` and `[byte[]]` input
@@ -44,12 +71,12 @@ This one is... honestly a mess. It's trying to do multiple things:
 
 Recommendation: **Delete both functions**
 
-## Convert-UUIDBytes
+### Convert-UUIDBytes
 - [x] Fix input and output type inconsistency
 - [ ] Test performance vs. `Convert-UUID`
 - [ ] Combine with `Convert-UUID`, adding a `[bytes[]]` pipeline parameter (if `[guid]` doesn't automatically convert)
 
-### Copilot Review
+#### Copilot Review
 This function appears to be your endianness conversion function - it takes a byte array and flips it between
 little-endian and big-endian formats. The three methods are different approaches to the same goal:
 
@@ -60,11 +87,3 @@ little-endian and big-endian formats. The three methods are different approaches
 **Problem:** It's trying to return both `[byte[]]` and `[guid]` types inconsistently.
 
 Recommendation: **Delete both functions**
-
-## New-UUIDNamespace
-- [ ] Test performance of `Convert-UUIDOrder` vs. method used in [MSI "SquishedGuid" Conversion](https://github.com/heaths/psmsi/blob/develop/tools/ConvertFrom-SquishedGuid.ps1)
-
-## Convert-UUIDSquished
-- [x] Add comment-based help
-- [ ] Rename `Convert-UUIDOrder` to `Convert-UUIDSquished`
-- [ ] Add option to format the output normally ("B") or for use with the registry ("N") at `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products`

@@ -23,29 +23,43 @@ function Convert-UUIDSquished {
 
     Output:
     {04030201-0605-0807-090a-0b0c0d0e0f10}
+    .EXAMPLE
+    PS C:\> Convert-UUIDSquished "01020304-0506-0708-090a-0b0c0d0e0f10" -Format n
 
+    Output:
+    0403020106050807090a0b0c0d0e0f10
+    .OUTPUTS
+    [Guid] if Format is not specified.
+    [String] if Format specified.
     .NOTES
     General notes
     #>
     [OutputType([guid])]
+    [OutputType([string],ParameterSetName='Formatted')]
     [Alias('Convert-UUIDOrder', 'Convert-GUIDSquished', 'cvgs')]
     [CmdletBinding()]
     Param(
         [Parameter(
             Mandatory,
-            Position=0,
+            Position = 0,
             ValueFromPipeline
         )]
         [guid]
         $GUID,
 
-        [ValidateSet('d','n','p','b','x',IgnoreCase)]
+        [Parameter(
+            Position = 1,
+            ValueFromPipeline,
+            ParameterSetName = 'Formatted'
+        )]
+        [ValidateSet(IgnoreCase,'d','n','p','b','x')]
         [string]
-        $Format = 'b'
+        $Format
     )
 
     Begin {
-        if(-not (Get-Variable 'LITTLE_ENDIAN' -Scope Global -ErrorAction SilentlyContinue)) {
+        $FunctionName = $MyInvocation.MyCommand.Name
+        if(-not (Get-Variable 'LITTLE_ENDIAN' -Scope Global -ea SilentlyContinue)) {
             Set-Variable -Name 'LITTLE_ENDIAN' -Value [BitConverter]::IsLittleEndian -Scope Script
         }
         $ConvertedBytes = [byte[]]::new(16)
@@ -60,6 +74,7 @@ function Convert-UUIDSquished {
                 [Array]::Reverse($Bytes, 4, 2)
                 [Array]::Reverse($Bytes, 6, 2)
             }
+            Write-Verbose "${FunctionName}: Processed $($Bytes.Count) bytes for $GUID"
         }
         catch {
             $Err = $_
@@ -73,15 +88,27 @@ function Convert-UUIDSquished {
             $ConvertedBytes[$i] = $ByteHI -bor $ByteLO
         } #>
         try {
-            $ConvertedBytes = $Bytes | Switch-ByteNibble
+            $ConvertedBytes = Switch-ByteNibble -Bytes $Bytes
+            Write-Verbose "${FunctionName}: Swapped $($ConvertedBytes.Count) $($ConvertedBytes.GetType().Name)"
         }
         catch {
             $Err = $_
             throw "Exception $($Err.Exception.HResult) performing nibble swap on GUID bytes > $($Err.Exception.Message)"
         }
 
-        $ConvertedGUID = [guid]::new($ConvertedBytes)
+        try {
+            $ConvertedGUID = [guid]::new($ConvertedBytes -as [byte[]])
+        }
+        catch {
+            $Err = $_
+            throw "Exception $($Err.Exception.HResult) parsing converted GUID bytes > $($Err.Exception.Message)"
+        }
 
-        Return $ConvertedGUID.ToString($Format)
+        if ($Format) {
+            Return $ConvertedGUID.ToString($Format).ToUpperInvariant()
+        }
+        else {
+            $ConvertedGUID
+        }
     }
 }

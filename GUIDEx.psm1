@@ -1,7 +1,7 @@
 Set-Variable -Name 'LITTLE_ENDIAN' -Value ([System.BitConverter]::IsLittleEndian) -Option Constant -Scope Global -ea SilentlyContinue
 
 # Import all scripts from the Private folder
-$PrivateScripts = Get-ChildItem -Path $PSScriptRoot\Private -Filter *.ps1
+$PrivateScripts = Get-ChildItem -Path $PSScriptRoot\Private -Filter *.ps1 -Exclude 'Test-GUID.ps1','Format-Binary.ps1'
 foreach ($Script in $PrivateScripts) {
     . $Script.FullName
 }
@@ -12,5 +12,7 @@ foreach ($Script in $PublicScripts) {
     . $Script.FullName
 }
 
-Export-ModuleMember -Function *-* -Alias *
+$FunctionsToExport = $PublicScripts.BaseName
+
+Export-ModuleMember -Function $FunctionsToExport -Alias *
 Export-ModuleMember -Variable 'LITTLE_ENDIAN'

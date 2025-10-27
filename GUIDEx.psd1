@@ -12,7 +12,7 @@
 RootModule = 'GUIDEx.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.6.2'
+ModuleVersion = '2.7.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -77,6 +77,7 @@ RequiredModules = @(
 FunctionsToExport = @(
     'Get-UUIDFromNamespace' # Create UUID v3 or v5 from a namespace and string
     'Convert-UUIDSquished' # Converts a GUID to the format stored by Windows Installer, e.g. in the Products registry key.
+    'New-WindowsTerminalUUID' # Creates a deterministic Windows Terminal profile UUID based on profile name and optional application name
     # 'Convert-UUID' # Converts a GUID to a different format, optionally reversing the first 3 groups of bytes and flipping all bit orders
     # 'Convert-UUIDBytes' # Reverses the first 3 groups of bytes in a GUID, optionally flipping all bit orders
 )
@@ -90,7 +91,8 @@ VariablesToExport = @()
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = @(
     'Get-GUIDFromNamespace', 'gufn'
-    'Convert-GUIDSquished', 'Convert-UUIDOrder', 'cvgs'
+    'Convert-GUIDSquished', 'Convert-UUIDOrder', 'cvgs',
+    'New-WindowsTerminalGUID', 'terminalguid'
     # 'New-GUID', 'ng'
     # 'Convert-GUID', 'cvg',
     # 'Convert-GUIDBytes', 'cvgb'
@@ -107,11 +109,9 @@ AliasesToExport = @(
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
-
     PSData = @{
-
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('UUID', 'GUID', 'UUIDv3', 'UUIDv5', 'WindowsInstaller', 'SquishedGUID')
+        Tags = @('UUID', 'GUID', 'UUIDv3', 'UUIDv5', 'WindowsInstaller', 'SquishedGUID', 'WindowsTerminal')
 
         # A URL to the license for this module.
         # LicenseUri = ''
@@ -133,9 +133,7 @@ PrivateData = @{
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
-
     } # End of PSData hashtable
-
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -143,6 +141,5 @@ PrivateData = @{
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
-
 }
 
