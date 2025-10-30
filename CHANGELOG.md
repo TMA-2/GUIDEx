@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.3] - 2025-10-30
+
+### Added
+- Generated PlatyPS help documents.
+- Generated MAML help from the PlatyPS docs.
+
+### Changed
+- Updated README.md to `New-WindowsTerminalUUID` function among other things.
+- `Get-UUIDFromNamespace`: Encoding parameter now defaults to UTF8.
+
+### Fixed
+- Fixed a stupid mistake in `New-WindowsTerminalUUID` that had "Order" instead of "Position" in the parameter attributes. Duh.
+
 ## [2.7.2] - 2025-10-27
 
 ### Added

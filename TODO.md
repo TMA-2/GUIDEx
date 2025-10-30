@@ -7,9 +7,10 @@
 - [ ] Fix *serious* issues with `Convert-UUIDFromNamespace` on Windows PowerShell
 - [ ] Generate markdown and MAML help
 - [ ] Compare `Convert-UUID` and `Convert-UUIDBytes`. Clean one or the other.
-- [ ] Consolidate functions. There should be approximately three:
+- [ ] Consolidate functions. There should be approximately four:
   - [x] `New-UUIDNamespace` to create UUID v3/v5 namespaces
-  - [x] `Convert-UUIDSquished` for MSI GUIDs specifically
+  - [ ] `New-WindowsTerminalUUID` for Terminal profile/fragments
+  - [x] `Convert-UUIDSquished` for MSI GUIDs "SQUIDS" specifically
   - [ ] `Convert-UUID` to flip between LE/BE byte order
     - [ ] Decide on a damn method and STICK WITH IT
 - [ ] Fix Pester tests once functions are sorted
@@ -17,7 +18,7 @@
 ### Medium Priority
 - [x] Add Conversion as a required module for general binary functions
   - [ ] Move/combine `Format-Binary` to Conversion, or embed it in the function that uses it
-  - [x] Move `Switch-ByteNibble` to Conversion
+  - [x] Move `Switch-ByteNibble` to Conversion and make it a required module.
   - [x] Move any related tests to Conversion
 
 ### Low Priority
@@ -69,7 +70,7 @@ This one is... honestly a mess. It's trying to do multiple things:
 - Do nibble swapping with the -Reverse flag (overlaps with Convert-UUIDSquished)
 - Has incomplete/broken logic in several places
 
-Recommendation: **Delete both functions**
+Recommendation: **Delete function**
 
 ### Convert-UUIDBytes
 - [x] Fix input and output type inconsistency
@@ -86,4 +87,4 @@ little-endian and big-endian formats. The three methods are different approaches
 
 **Problem:** It's trying to return both `[byte[]]` and `[guid]` types inconsistently.
 
-Recommendation: **Delete both functions**
+Recommendation: **Delete function**

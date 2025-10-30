@@ -1,6 +1,10 @@
 # Unnecessary / test files
+Classes/
+
 Private/Test-GUID.ps1
+Private/Format-Binary.ps1
 
 Public/Convert-UUID.ps1
 Public/Convert-UUIDBytes.ps1
+
 **/*.bak

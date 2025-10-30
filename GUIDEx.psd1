@@ -12,7 +12,7 @@
 RootModule = 'GUIDEx.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.7.2'
+ModuleVersion = '2.8.3'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -21,19 +21,19 @@ ModuleVersion = '2.7.2'
 GUID = 'db6cf18e-9912-4a19-a508-371b5ac24600'
 
 # Author of this module
-Author = 'Jonathan Dunham'
+Author = 'Jon Dunham'
 
 # Company or vendor of this module
-CompanyName = 'THR'
+CompanyName = 'Jonathan Dunham'
 
 # Copyright statement for this module
-Copyright = '(c) THR. All rights reserved.'
+Copyright = '(c) Jonathan Dunham. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Functions for working with and converting GUIDs.'
 
 # Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '5.1'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -111,13 +111,13 @@ AliasesToExport = @(
 PrivateData = @{
     PSData = @{
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('UUID', 'GUID', 'UUIDv3', 'UUIDv5', 'WindowsInstaller', 'SquishedGUID', 'WindowsTerminal')
+        Tags = @('UUID', 'GUID', 'UUIDv3', 'UUIDv5', 'WindowsInstaller', 'SquishedGUID', 'SQUID', 'CompressedGUID', 'WindowsTerminal')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/TMA-2/GUIDEx/blob/main/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/TMA-2/GUIDEx'
 
         # A URL to an icon representing this module.
         # IconUri = ''

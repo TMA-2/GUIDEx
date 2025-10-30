@@ -32,11 +32,21 @@ function Convert-UUIDSquished {
     [Guid] if Format is not specified.
     [String] if Format specified.
     .NOTES
-    General notes
+    A "squished GUID" (SQUID) is a compressed format of a standard Windows Installer GUID, used to save space in the registry.
+    It removes hyphens and curly braces from the GUID and rearranges the hexadecimal digits, and is used internally by the installer to identify products and their updates.
+    You can find them used in: HKLM\Software\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products
+    .COMPONENT
+    Windows Installer
+    .LINK
+    About SQUIDs
+    https://lordjeb.com/2013/10/01/windows-installer-squids/
+    .LINK
+    Converting a Regular GUID to a Compressed GUID
+    https://community.revenera.com/s/article/converting-a-regular-guid-to-a-compressed-guid
     #>
     [OutputType([guid])]
     [OutputType([string],ParameterSetName='Formatted')]
-    [Alias('Convert-UUIDOrder', 'Convert-GUIDSquished', 'cvgs')]
+    [Alias('Convert-SQUID', 'Convert-GUIDSquished', 'cvgs')]
     [CmdletBinding()]
     Param(
         [Parameter(

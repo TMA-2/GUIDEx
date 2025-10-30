@@ -1,7 +1,7 @@
 function New-WindowsTerminalUUID {
     <#
         .SYNOPSIS
-        Creates a UUID for a Windows Terminal fragment.
+        Creates a deterministic UUID for a Windows Terminal profile fragment.
         .DESCRIPTION
         This essentially calls Get-UUIDFromNamespace once or twice, depending on the fragment type.
         .PARAMETER ProfileName
@@ -19,20 +19,23 @@ function New-WindowsTerminalUUID {
         .NOTES
         {f65ddb7e-706b-4499-8a50-40313caf510a} is the namespace GUID for profiles created by plugins and fragments.
         {2bde4a90-d05f-401c-9492-e40884ead1d8} is the namespace GUID for profiles created by the Windows Terminal Team.
+        .LINK
+        Windows Terminal Fragments
+        https://learn.microsoft.com/en-us/windows/terminal/json-fragment-extensions#profile-guids
     #>
     [Alias('New-WindowsTerminalGUID','terminalguid')]
     [OutputType([guid])]
-    [CmdletBinding(PositionalBinding,DefaultParameterSetName = 'Fragment')]
+    [CmdletBinding(PositionalBinding,DefaultParameterSetName = 'Official')]
     Param(
         [Parameter(
             Mandatory,
-            Order = 0,
+            Position = 0,
             ValueFromPipeline,
             ParameterSetName = 'Official'
         )]
         [Parameter(
             Mandatory,
-            Order = 0,
+            Position = 0,
             ValueFromPipeline,
             ParameterSetName = 'Fragment'
         )]
@@ -40,7 +43,7 @@ function New-WindowsTerminalUUID {
 
         [Parameter(
             Mandatory,
-            Order = 1,
+            Position = 1,
             ParameterSetName = 'Fragment'
         )]
         [string]$Application

@@ -1,0 +1,396 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<helpItems schema="maml" xmlns="http://msh">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Convert-UUIDSquished</command:name>
+      <command:verb>Convert</command:verb>
+      <command:noun>UUIDSquished</command:noun>
+      <maml:description>
+        <maml:para>Converts a GUID to the format stored by Windows Installer, e.g. in the Products registry key.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The cmdlet is idempotent -- this means you can give it a regular MSI GUID, or a GUID in the "Squished" format, and it will convert in either direction automatically.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Convert-UUIDSquished</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="1" aliases="none">
+          <maml:name>GUID</maml:name>
+          <maml:description>
+            <maml:para>A GUID in a supported format. Curly braces and hyphens optional.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Guid</command:parameterValue>
+          <dev:type>
+            <maml:name>Guid</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="2" aliases="none">
+          <maml:name>Format</maml:name>
+          <maml:description>
+            <maml:para>The GUID output format. Default is "b". Supported options are: b - Default format with hyphens and curly braces (the typical format) d - Default format with hyphens n - Default format without hyphens (use this for Product registry keys) p - Default format with parentheses and hyphens x - Hexadecimal format</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="1" aliases="none">
+        <maml:name>GUID</maml:name>
+        <maml:description>
+          <maml:para>A GUID in a supported format. Curly braces and hyphens optional.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Guid</command:parameterValue>
+        <dev:type>
+          <maml:name>Guid</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="2" aliases="none">
+        <maml:name>Format</maml:name>
+        <maml:description>
+          <maml:para>The GUID output format. Default is "b". Supported options are: b - Default format with hyphens and curly braces (the typical format) d - Default format with hyphens n - Default format without hyphens (use this for Product registry keys) p - Default format with parentheses and hyphens x - Hexadecimal format</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>[Guid] if Format is not specified.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>[String] if Format specified.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>A "squished GUID" (SQUID) is a compressed format of a standard Windows Installer GUID, used to save space in the registry. It removes hyphens and curly braces from the GUID and rearranges the hexadecimal digits, and is used internally by the installer to identify products and their updates. You can find them used in: HKLM\Software\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Convert-UUIDSquished "01020304-0506-0708-090a-0b0c0d0e0f10"</dev:code>
+        <dev:remarks>
+          <maml:para>Output: {04030201-0605-0807-090a-0b0c0d0e0f10}</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>Convert-UUIDSquished "01020304-0506-0708-090a-0b0c0d0e0f10" -Format n</dev:code>
+        <dev:remarks>
+          <maml:para>Output: 0403020106050807090a0b0c0d0e0f10</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>About SQUIDs</maml:linkText>
+        <maml:uri>https://lordjeb.com/2013/10/01/windows-installer-squids/</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Converting a Regular GUID to a Compressed GUID</maml:linkText>
+        <maml:uri>https://community.revenera.com/s/article/converting-a-regular-guid-to-a-compressed-guid</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-UUIDFromNamespace</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>UUIDFromNamespace</command:noun>
+      <maml:description>
+        <maml:para>Gets a UUID version 3 (UUIDv3) or version 5 (UUIDv5) derived from a namespace and a name.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Get-UUIDFromNamespace function gets a UUID version 3 or version 5, which are universally unique identifiers that are generated using a namespace identifier and a name. UUIDv3 uses MD5 hashing, while UUIDv5 uses SHA-1 hashing to create the identifier.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-UUIDFromNamespace</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="1" aliases="NS">
+          <maml:name>Namespace</maml:name>
+          <maml:description>
+            <maml:para>The namespace identifier, which is a UUID that defines the scope of the name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Guid</command:parameterValue>
+          <dev:type>
+            <maml:name>Guid</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="2" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>The name from which the UUID will be generated. This is typically a string.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Version</maml:name>
+          <maml:description>
+            <maml:para>The version of the UUID to generate. Accepts 3 or 5. Default is 5.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>5</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Encoding</maml:name>
+          <maml:description>
+            <maml:para>The encoding method to use for the name. UTF8 for standard RFC compliance, UTF16LE for Windows Terminal compatibility.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>UTF8</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="1" aliases="NS">
+        <maml:name>Namespace</maml:name>
+        <maml:description>
+          <maml:para>The namespace identifier, which is a UUID that defines the scope of the name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Guid</command:parameterValue>
+        <dev:type>
+          <maml:name>Guid</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="2" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>The name from which the UUID will be generated. This is typically a string.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Version</maml:name>
+        <maml:description>
+          <maml:para>The version of the UUID to generate. Accepts 3 or 5. Default is 5.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>5</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Encoding</maml:name>
+        <maml:description>
+          <maml:para>The encoding method to use for the name. UTF8 for standard RFC compliance, UTF16LE for Windows Terminal compatibility.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>UTF8</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>[Guid] The UUID version 3 or 5 derived from the namespace and name.</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>UUID version 3 is defined in RFC 4122. UUID version 5 is defined in RFC 4122.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Get-UUIDFromNamespace -Namespace "6ba7b810-9dad-11d1-80b4-00c04fd430c8" -Name "example" -Version 5</dev:code>
+        <dev:remarks>
+          <maml:para>Gets a UUIDv5 based on the provided namespace and name.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>Get-UUIDFromNamespace -Namespace "6ba7b810-9dad-11d1-80b4-00c04fd430c8" -Name "example" -Version 3</dev:code>
+        <dev:remarks>
+          <maml:para>Gets a UUIDv3 based on the provided namespace and name.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
+        <dev:code>Get-UUIDFromNamespace -Namespace "{2bde4a90-d05f-401c-9492-e40884ead1d8}" -Name "Ubuntu" -Encoding UTF16LE</dev:code>
+        <dev:remarks>
+          <maml:para>Generates a UUID for a Windows Terminal profile using the profile namespace and UTF16LE encoding. Output: 2c4de342-38b7-51cf-b940-2309a097f518</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 4 --------------------------</maml:title>
+        <dev:code>$AppNamespace = Get-UUIDFromNamespace -Namespace '{f65ddb7e-706b-4499-8a50-40313caf510a}' -Name "Git" -Encoding UTF16LE
+Get-UUIDFromNamespace -Namespace $AppNamespace -Name "Git Bash" -Encoding UTF16LE</dev:code>
+        <dev:remarks>
+          <maml:para>Generates a UUID for a Windows Terminal profile using the fragment namespace and UTF16LE encoding. Output: 2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Windows Terminal Fragment documentation</maml:linkText>
+        <maml:uri>https://learn.microsoft.com/en-us/windows/terminal/json-fragment-extensions#profile-guids</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>New-WindowsTerminalUUID</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>WindowsTerminalUUID</command:noun>
+      <maml:description>
+        <maml:para>Creates a deterministic UUID for a Windows Terminal profile fragment.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This essentially calls `Get-UUIDFromNamespace` once or twice with the expected namespace and encoding, depending on the profile type.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-WindowsTerminalUUID</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="1" aliases="none">
+          <maml:name>ProfileName</maml:name>
+          <maml:description>
+            <maml:para>The name of the Windows Terminal profile.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>Application</maml:name>
+          <maml:description>
+            <maml:para>The name of the application for fragment profiles. If not specified, an official profile UUID is generated.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="1" aliases="none">
+        <maml:name>ProfileName</maml:name>
+        <maml:description>
+          <maml:para>The name of the Windows Terminal profile.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>Application</maml:name>
+        <maml:description>
+          <maml:para>The name of the application for fragment profiles. If not specified, an official profile UUID is generated.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Guid</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>{f65ddb7e-706b-4499-8a50-40313caf510a} is the namespace GUID for profiles created by plugins and fragments. {2bde4a90-d05f-401c-9492-e40884ead1d8} is the namespace GUID for profiles created by the Windows Terminal Team.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>New-WindowsTerminalUUID -ProfileName "Ubuntu"</dev:code>
+        <dev:remarks>
+          <maml:para>Output: {2c4de342-38b7-51cf-b940-2309a097f518}</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>New-WindowsTerminalUUID -ProfileName "Git Bash" -Application "Git"</dev:code>
+        <dev:remarks>
+          <maml:para>Output: {f65ddb7e-706b-4499-8a50-40313caf510a}</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Windows Terminal Fragments</maml:linkText>
+        <maml:uri>https://learn.microsoft.com/en-us/windows/terminal/json-fragment-extensions#profile-guids</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+</helpItems>

@@ -22,8 +22,7 @@ function Get-UUIDFromNamespace {
     The encoding method to use for the name. UTF8 for standard RFC compliance, UTF16LE for Windows Terminal compatibility.
 
     .OUTPUTS
-    System.Guid
-    The UUID version 3 or 5 derived from the namespace and name.
+    [Guid] The UUID version 3 or 5 derived from the namespace and name.
 
     .EXAMPLE
     PS C:\> Get-UUIDFromNamespace -Namespace "6ba7b810-9dad-11d1-80b4-00c04fd430c8" -Name "example" -Version 5
@@ -34,9 +33,17 @@ function Get-UUIDFromNamespace {
     Gets a UUIDv3 based on the provided namespace and name.
 
     .EXAMPLE
-    PS C:\> $terminalNS = [guid]"{2bde4a90-d05f-401c-9492-e40884ead1d8}"
-    PS C:\> Get-UUIDFromNamespace -Namespace $terminalNS -Name "Ubuntu" -Encoding UTF16LE
-    Gets a UUID for Windows Terminal profile using Terminal's namespace and UTF16LE encoding.
+    PS C:\> Get-UUIDFromNamespace -Namespace "{2bde4a90-d05f-401c-9492-e40884ead1d8}" -Name "Ubuntu" -Encoding UTF16LE
+
+    Generates a UUID for a Windows Terminal profile using the profile namespace and UTF16LE encoding.
+    Output: 2c4de342-38b7-51cf-b940-2309a097f518
+
+    .EXAMPLE
+    PS C:\> $AppNamespace = Get-UUIDFromNamespace -Namespace '{f65ddb7e-706b-4499-8a50-40313caf510a}' -Name "Git" -Encoding UTF16LE
+    PS C:\> Get-UUIDFromNamespace -Namespace $AppNamespace -Name "Git Bash" -Encoding UTF16LE
+
+    Generates a UUID for a Windows Terminal profile using the fragment namespace and UTF16LE encoding.
+    Output: 2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b
 
     .NOTES
     UUID version 3 is defined in RFC 4122.
@@ -72,7 +79,7 @@ function Get-UUIDFromNamespace {
         )]
         [ValidateSet('UTF8', 'UTF16LE')]
         [string]
-        $Encoding = 'UTF16LE'
+        $Encoding = 'UTF8'
     )
 
     begin {
