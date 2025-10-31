@@ -1,4 +1,4 @@
-Set-Variable -Name 'LITTLE_ENDIAN' -Value ([System.BitConverter]::IsLittleEndian) -Option Constant -Scope Global -ea SilentlyContinue
+Set-Variable -Name 'LITTLE_ENDIAN' -Value ([BitConverter]::IsLittleEndian) -Option Constant -Scope Global -ea SilentlyContinue
 
 # Import all scripts from the Private folder
 $PrivateScripts = Get-ChildItem -Path $PSScriptRoot\Private -Filter *.ps1 -Exclude 'Test-GUID.ps1','Format-Binary.ps1'

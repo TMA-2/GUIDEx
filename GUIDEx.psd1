@@ -12,7 +12,7 @@
 RootModule = 'GUIDEx.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.8.3'
+ModuleVersion = '2.9.4'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -51,12 +51,7 @@ PowerShellVersion = '5.1'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @(
-    @{
-        ModuleName = 'Conversion'
-        ModuleVersion = '0.8.12'
-    }
-)
+# RequiredModules = @()
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()

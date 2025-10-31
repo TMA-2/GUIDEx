@@ -59,7 +59,7 @@ function Convert-UUIDSquished {
 
         [Parameter(
             Position = 1,
-            ValueFromPipeline,
+            ValueFromPipelineByPropertyName,
             ParameterSetName = 'Formatted'
         )]
         [ValidateSet(IgnoreCase,'d','n','p','b','x')]

@@ -107,6 +107,11 @@ function Get-UUIDFromNamespace {
         }
         elseif($PSEdition -eq 'Desktop') {
             $NamespaceBytes = $Namespace.ToByteArray() | Switch-ByteNibble
+            # $NamespaceBytes = $Namespace.ToByteArray()
+            # Convert to big-endian (network byte order) for RFC 4122
+            # [Array]::Reverse($NamespaceBytes, 0, 4)
+            # [Array]::Reverse($NamespaceBytes, 4, 2)
+            # [Array]::Reverse($NamespaceBytes, 6, 2)
         }
 
         # Convert the name to a byte array
