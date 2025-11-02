@@ -88,6 +88,7 @@ function Switch-ByteNibble {
         elseif ($ParamSet -eq 'Bytes') {
             Write-Verbose " ${FunctionName}: Outputting $($reversedBytes.Count) bytes as $($reversedBytes.GetType().Name)"
             return ,$reversedBytes
+            # Write-Output (,$reversedBytes)
         }
     }
 }

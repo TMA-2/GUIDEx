@@ -1,4 +1,7 @@
 # GUIDEx
+
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/GUIDEx)](https://www.powershellgallery.com/packages/GUIDEx)
+
 This module provides functionality for three primary applications:
 - Windows Installer / Squished GUID conversion
 - UUIDv5 and v3 generation
